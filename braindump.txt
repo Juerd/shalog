@@ -10,13 +10,13 @@ Whirlbook (draaiboek!)
         - Volunteers: barcodes
 - Our tasks
     - Getting more volunteers
-        - Finding subteamleads => Juerd, knorrie
+        - Finding subteamleads => Juerd, Knorrie
         - Getting volunteers ad-hoc on-site
         - Administering permissions (like driving licenses)
             - Driving license on file
             - Suitability
             - Can be administered in tracking system
-    - Pre-event shopping  (FIND SUBTEAMLEAD! training: Juerd, knorrie)
+    - Pre-event shopping  (FIND SUBTEAMLEAD! training: Juerd, Knorrie)
         - Consumables
         - Generic tools
         - Finding out what's needed
