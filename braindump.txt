@@ -1,0 +1,109 @@
+Draaiboek
+- Structuur van het team
+    - Niet-overlappende dingen => subteams => subteamleads
+    - Rollen/mensen
+    - Relatie tov andere teams
+        - entrance: vuilniszakken
+        - parkeren? (shuttle, etc)
+        - terrein
+        - power (stroom voor perscontainer)
+- Welke taken wel?
+    - volunteers regelen
+        - subteamleads vinden => Juerd, knorrie
+        - ad-hoc on-site
+        - herkenning ("groene bandjes") voor geregistreerde bestuurders  -- subteamlead vinden!
+            - rijbewijs on file
+            - geschiktheid beoordeeld
+            - kan in trackingsysteem wellicht
+    - inkopen vooraf  -- subteamlead vinden! inwerken: Juerd, knorrie
+        - verbruiksartikelen
+        - algemene gereedschappen
+        - in kaart brengen wat er nodig is
+            - we geven aan naar wat voor winkels we gaan
+            - extreem specifieke dingen aan teams overlaten
+        - aan Eelco lijst met bonnen vragen
+    - magazijn  => Juerd
+        - opslag voor bestellingen/post/binnengekomen pakketten
+        - uitleen van gereedschappen
+        - uitleen van verbruiksartikelen
+        - voor wie?
+            - voor andere teams (bevoegdheid moet gecontroleerd worden; hoe?)
+        - shoppingspree-lists bijhouden
+            - verwachtingsmanagement
+        - trackingsysteem voor alles
+            - ==> juerd
+        - bezorgdienst van hamers en beitels
+    - bagageshuttle-dienst op het veld  -- subteamlead vinden!
+    - shuttle-service van/naar OV en/of Parkeerterrein   -- subteamlead vinden! zijn jaap en/of manduca bereid om iemand in te werken?
+        - vaste ritten
+        - op afroep
+    - dingen rondrijden in het land  -- subteamlead vinden! is manduca bereid om iemand in te werken?
+        - busjes etc.
+        - ophalen bij adressen in het land
+        - terugbrengen in het land
+        - inkopen
+        - beheer van vervoersmiddelen
+    - grote dingen rondrijden on site voor andere teams  -- subteamlead vinden!
+        - golfkarren
+        - manitou
+        - beheer van vervoersmiddelen (manitou-spul, golfkarren en zo)
+        - bierbanken, hekken, vloerdelen
+    - afval  -- subteamlead vinden! inwerken: knorrie
+        - perscontainers centraal
+            - leuk: techniek, herrie, popcorn-geluiden
+            - weinig ruimtebeslag
+            - krachtstroom nodig!
+        - kliko's on-site
+            - grote voorkeur voor kliko's ipv grotere containers
+            - kleiner, dus meer verspreid mogelijk, minder lopen
+            - zakken
+        - afvalscheiding ja/nee?
+            - alleen als het met KLEINE ingrepen kan
+            - is na-scheiding compatible met perscontainer?
+        - legen van on-site containers
+        - "call DIRT"
+        - bottle drop points?
+            - statiegeld uitsorteren voordat het de glasbak ingaat?
+        - ledigingen coordineren met afvalboer
+        - gratis vuilniszakken uitdelen (entrance/infodesk)
+- Welke taken niet?
+    - bezoekers vervoeren op het terrein
+    - bezoekers begeleiden bij het parkeren
+    - VIP/spreker-vervoer
+    - verkeersplan voor bezoekers-/leveranciersstromen (?)
+        - omleidingen?
+        - bewegwijzering naar het veld
+        - eenrichtingsverkeer etc
+        - geef locals een toegangsbandje voor recht van overpad (indien nodig
+             op terrein)
+- Geografische organisatie
+    - headquarters: centraal (bij magazijn)
+    - magazijn: centraal
+    - centraal kan ook betekenen "bij de rest van orga"
+    - voertuigen: ???
+        - opladen golfkarren
+    - groot materieel: aan de rand van het terrein
+        - camerabewaking
+- Eigen middelen
+    - vervoersmiddelen:
+        - personenbusjes (indien nodig)
+        - busjes/bakwagens
+        - bolderkarren
+            - ook een paar voor bezoekers
+        - manitou(s)
+        - golfkarren
+        - aanhanger(s) voor golfkarren
+        - fietsen
+    - portofoons
+    - magazijnbeheersysteem
+- Tijdsplanning
+    - ASAP/voorbereiding
+    - $x maanden vooraf
+    - Opbouw
+    - Event
+    - Afbouw
+
+
+* Draaiboek op papier (wiki als editor, maar printen zodra het "af" is)
+* Eigen wiki opzetten in afwachting van algemene wiki?
+* In draaiboek aangeven welke dingen nu al gedaan kunnen worden
