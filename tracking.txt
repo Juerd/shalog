@@ -34,12 +34,6 @@ Command "is-at":
     infodesk
     -> result: hammer's new location is recorded
 
-    hammer
-    infodesk
-    is-at
-    last-item
-    -> result: same as above
-
     # Note: indentation provided for legability; not required in input!
     list
         spanner
@@ -47,6 +41,14 @@ Command "is-at":
     is-at
     infodesk
     -> result: both hammer and spanner are now at infodesk
+
+    list
+        spanner
+        hammer
+        infodesk
+    is-at
+    last-item
+    -> result: same as above
 
     box42
     is-at
