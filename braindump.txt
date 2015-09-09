@@ -1,109 +1,104 @@
-Draaiboek
-- Structuur van het team
-    - Niet-overlappende dingen => subteams => subteamleads
-    - Rollen/mensen
-    - Relatie tov andere teams
-        - entrance: vuilniszakken
-        - parkeren? (shuttle, etc)
-        - terrein
-        - power (stroom voor perscontainer)
-- Welke taken wel?
-    - volunteers regelen
-        - subteamleads vinden => Juerd, knorrie
-        - ad-hoc on-site
-        - herkenning ("groene bandjes") voor geregistreerde bestuurders  -- subteamlead vinden!
-            - rijbewijs on file
-            - geschiktheid beoordeeld
-            - kan in trackingsysteem wellicht
-    - inkopen vooraf  -- subteamlead vinden! inwerken: Juerd, knorrie
-        - verbruiksartikelen
-        - algemene gereedschappen
-        - in kaart brengen wat er nodig is
-            - we geven aan naar wat voor winkels we gaan
-            - extreem specifieke dingen aan teams overlaten
-        - aan Eelco lijst met bonnen vragen
-    - magazijn  => Juerd
-        - opslag voor bestellingen/post/binnengekomen pakketten
-        - uitleen van gereedschappen
-        - uitleen van verbruiksartikelen
-        - voor wie?
-            - voor andere teams (bevoegdheid moet gecontroleerd worden; hoe?)
-        - shoppingspree-lists bijhouden
-            - verwachtingsmanagement
-        - trackingsysteem voor alles
-            - ==> juerd
-        - bezorgdienst van hamers en beitels
-    - bagageshuttle-dienst op het veld  -- subteamlead vinden!
-    - shuttle-service van/naar OV en/of Parkeerterrein   -- subteamlead vinden! zijn jaap en/of manduca bereid om iemand in te werken?
-        - vaste ritten
-        - op afroep
-    - dingen rondrijden in het land  -- subteamlead vinden! is manduca bereid om iemand in te werken?
-        - busjes etc.
-        - ophalen bij adressen in het land
-        - terugbrengen in het land
-        - inkopen
-        - beheer van vervoersmiddelen
-    - grote dingen rondrijden on site voor andere teams  -- subteamlead vinden!
-        - golfkarren
-        - manitou
-        - beheer van vervoersmiddelen (manitou-spul, golfkarren en zo)
-        - bierbanken, hekken, vloerdelen
-    - afval  -- subteamlead vinden! inwerken: knorrie
-        - perscontainers centraal
-            - leuk: techniek, herrie, popcorn-geluiden
-            - weinig ruimtebeslag
-            - krachtstroom nodig!
-        - kliko's on-site
-            - grote voorkeur voor kliko's ipv grotere containers
-            - kleiner, dus meer verspreid mogelijk, minder lopen
-            - zakken
-        - afvalscheiding ja/nee?
-            - alleen als het met KLEINE ingrepen kan
-            - is na-scheiding compatible met perscontainer?
-        - legen van on-site containers
+Whirlbook (draaiboek!)
+- Team structure
+    - Non overlapping activities can be subteams with subteamleads
+    - Role/people matrix
+    - Cooperation with other teams
+        - Entrance: garbage bags
+        - Parking: shuttle
+        - Terrain: geographical planning
+        - Power: compactor
+        - Volunteers: barcodes
+- Our tasks
+    - Getting more volunteers
+        - Finding subteamleads => Juerd, knorrie
+        - Getting volunteers ad-hoc on-site
+        - Administering permissions (like driving licenses)
+            - Driving license on file
+            - Suitability
+            - Can be administered in tracking system
+    - Pre-event shopping  (FIND SUBTEAMLEAD! training: Juerd, knorrie)
+        - Consumables
+        - Generic tools
+        - Finding out what's needed
+            - We limit the list of shops beforehand
+            - Leave extremely specific things to the teams
+            - Ask Eelco for a list of receipts for inspiration
+        - Arrage for pre-event storage
+    - Warehouse  => Juerd
+        - Storage for incoming orders, packages, and mail
+        - Borrowing of tools and consumables to members of other teams
+            - Verify that they're actually volunteers
+        - Keep shopping lists
+            - Expectation Management
+        - Tracking system for everything => Juerd
+        - Delivery of borrowed goods
+    - Parking<->terrain luggage shuttle service (FIND SUBTEAMLEAD)
+    - Public transport<->parking<->terrain shuttle for visitors (FIND SUBTEAMLEAD; training: Jaap? Manduca?)
+        - Fixed shifts
+        - On demand
+    - Off-site pick-up and delivery (FIND SUBTEAMLEAD; training: Manduca, isACK?)
+        - Vans
+        - Picking things up
+        - Returning them
+        - Fleet supervision
+    - Driving things around on site for other teams (FIND SUBTEAMLEAD)
+        - Things like beer benches, fences, floor boards, etc.
+        - Golf carts
+        - Manitous (field forklifts)
+        - Fleet supervision
+    - Waste management (FIND SUBTEAMLEAD; training: Knorrie)
+        - Central compactors
+            - Fun: technical, noise, popcorn sounds
+            - Takes little space
+            - Needs three phase power until the very end
+        - Wheelie bins (kliko's) on site
+            - Big preference for wheelie bins instead of big dumpsters
+            - Smaller, so they can be spread out more, always one in sight
+            - Bags!
+        - Waste sorting yes/no?
+            - Only if it doesn't get in our way
+            - Can the garbage company post-sort things for us?
+        - Emptying of wheelie bins
         - "call DIRT"
-        - bottle drop points?
-            - statiegeld uitsorteren voordat het de glasbak ingaat?
-        - ledigingen coordineren met afvalboer
-        - gratis vuilniszakken uitdelen (entrance/infodesk)
-- Welke taken niet?
-    - bezoekers vervoeren op het terrein
-    - bezoekers begeleiden bij het parkeren
-    - VIP/spreker-vervoer
-    - verkeersplan voor bezoekers-/leveranciersstromen (?)
-        - omleidingen?
-        - bewegwijzering naar het veld
-        - eenrichtingsverkeer etc
-        - geef locals een toegangsbandje voor recht van overpad (indien nodig
-             op terrein)
-- Geografische organisatie
-    - headquarters: centraal (bij magazijn)
-    - magazijn: centraal
-    - centraal kan ook betekenen "bij de rest van orga"
-    - voertuigen: ???
-        - opladen golfkarren
-    - groot materieel: aan de rand van het terrein
-        - camerabewaking
-- Eigen middelen
-    - vervoersmiddelen:
-        - personenbusjes (indien nodig)
-        - busjes/bakwagens
-        - bolderkarren
-            - ook een paar voor bezoekers
-        - manitou(s)
-        - golfkarren
-        - aanhanger(s) voor golfkarren
-        - fietsen
-    - portofoons
-    - magazijnbeheersysteem
-- Tijdsplanning
-    - ASAP/voorbereiding
-    - $x maanden vooraf
-    - Opbouw
+        - Bottle drop points?
+            - Sort deposit bottles?
+        - Coordinate emptying of dumpsters with garbage company
+        - Hand out free garbage bags (entrance/infodesk)
+- Not our department™
+    - Moving visitors
+    - Managing parking
+    - Moving VIPs/speakers
+    - Traffic plan for visitors/suppliers
+        - Detours
+        - Direction signs
+        - Unidirectional streets
+        - Access passes for locals?
+- Geographical organisation
+    - Headquarters: central (at warehouse)
+    - Warehouse: central
+    - Central could mean "next to infodesk or volunteers"
+    - Vehicles: ???
+        - Charging golf carts
+    - Large vehicles: edge of the terrain
+        - Camera surveillance?
+- Own resources
+    - Fleet:
+        - Minibuses for moving people (if we do shuttles)
+        - Vans/trucks for moving stuff:
+        - Wagons (bolderkarren)
+            - Have a few for visitors?
+        - Field forklifts (manitous)
+        - Golf carts
+        - Trailer(s) for golf carts
+        - Bicycles
+    - Portable radios
+    - Warehouse management system
+- Schedule
+    - ASAP/preparation
+    - $x months in advance
+    - Build-up
     - Event
-    - Afbouw
+    - Tear down
 
-
-* Draaiboek op papier (wiki als editor, maar printen zodra het "af" is)
-* Eigen wiki opzetten in afwachting van algemene wiki?
-* In draaiboek aangeven welke dingen nu al gedaan kunnen worden
+* Whirlbook (draaiboek) on paper
+* Indicate which actionable items can be done right now
