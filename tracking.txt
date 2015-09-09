@@ -1,0 +1,124 @@
+Goal: a system for tracking physical objects
+
+With a simple barcode driven user interface, the user can specify that a Thing
+is either in a Container, at a Location, or in the hands of a Person.
+
+Object hierachy:
+
+    - Command
+    - Thing
+        has location
+    - Person (does Thing)
+        has location (not Container, not Person)
+    - Container (does Thing, does Location)
+        has location (not Person)
+    - Location
+        has location (not Container, not Person)
+        can be "hidden", which also hides its Things from lists
+
+These all share a single namespace, and are stored as simple JSON-compatible
+objects. Metadata is mostly stored as text strings; no need for fancy things.
+
+Input takes the form of a single thing, or a list. The list ends with a
+command, which then operates on the given list.
+
+Command "is-at":
+
+    The second operand of is-at has to be a Location, or the special term
+    "last-item", which uses the last item from the first operand as the
+    location. "last-item" can be used if you accidentally scanned the location
+    before scanning "is-at".
+
+    hammer
+    is-at
+    infodesk
+    -> result: hammer's new location is recorded
+
+    hammer
+    infodesk
+    is-at
+    last-item
+    -> result: same as above
+
+    # Note: indentation provided for legability; not required in input!
+    list
+        spanner
+        hammer
+    is-at
+    infodesk
+    -> result: both hammer and spanner are now at infodesk
+
+    box42
+    is-at
+    shelfB3
+    -> result: box42's location is updated to shelfB3
+
+    hammer
+    spanner
+    -> result: error, spanner is not a valid command
+
+Command "info":
+
+    box42
+    info
+    -> result: info about box42's contents (as a thing, and as a location)
+
+    hammer
+    info
+    -> result: information about the hammer's whereabouts and its recent history
+
+    list
+        hammer
+        screwdriver
+    info
+    -> result: error, info does not work on a list
+
+Command "help":
+
+    hammer
+    help
+    -> result: error, help does not take arguments
+
+    help
+    -> result: short help text
+
+Command "cancel" or "abort":
+
+    hammer
+    cancel
+    -> result: empty stack
+
+    list
+        hammer
+        box42
+    abort
+    -> result: empty stack
+
+Implied "is-at" command:
+
+    When operating on a single item (so there's no "list"), any Location (for
+    example, a Person or a Container) can be used as a command. This implies
+    the "is-at" command:
+
+    hammer
+    henkdevries
+    -> result: just like "hammer / is-at / henkdevries"
+
+    hammer
+    shelfB3
+    -> result: hammer is (back) at shelf B3
+
+    shelfB3
+    LHQ
+    -> result: the shelf itself now has a location: LHQ
+
+    list
+        hammer
+        spanner
+        screwdriver
+        box42
+    -> result: still waiting for a command!
+    henkdevries
+    -> result: Henk got the hammer, spanner, screwdriver, and a box (of things)
+
+
