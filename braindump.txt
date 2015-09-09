@@ -8,6 +8,9 @@ Whirlbook (draaiboek!)
         - Terrain: geographical planning
         - Power: compactor
         - Volunteers: barcodes
+        - InfoHelpDesk:
+            - relay information about Logistics to teams
+            - warehouse/tools are for teams, not for visitors/villages
 - Our tasks
     - Getting more volunteers
         - Finding subteamleads => Juerd, Knorrie
