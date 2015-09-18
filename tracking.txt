@@ -24,8 +24,9 @@ Object hierachy:
 These all share a single namespace, and are stored as simple JSON-compatible
 objects. Metadata is mostly stored as text strings; no need for fancy things.
 
-Input takes the form of a single thing, or a list. The list ends with a
-command, which then operates on the given list.
+Input is given as a list of scanned barcodes. The list ends with a command,
+which then operates on the given list. A command can require further operands,
+given after the command.
 
 Command "is-at":
 
@@ -40,17 +41,15 @@ Command "is-at":
     -> result: hammer's new location is recorded
 
     # Note: indentation provided for legability; not required in input!
-    list
-        spanner
-        hammer
+    spanner
+    hammer
     is-at
     infodesk
     -> result: both hammer and spanner are now at infodesk
 
-    list
-        spanner
-        hammer
-        infodesk
+    spanner
+    hammer
+    infodesk
     is-at
     last-item
     -> result: same as above
@@ -62,7 +61,7 @@ Command "is-at":
 
     hammer
     spanner
-    -> result: error, spanner is not a valid command
+    -> result: incomplete input, no command given
 
 Command "info":
 
@@ -74,11 +73,10 @@ Command "info":
     info
     -> result: information about the hammer's whereabouts and its recent history
 
-    list
-        hammer
-        screwdriver
+    hammer
+    screwdriver
     info
-    -> result: error, info does not work on a list
+    -> result: error, info does not work on a list of objects
 
 Command "help":
 
@@ -95,37 +93,49 @@ Command "cancel" or "abort":
     cancel
     -> result: empty stack
 
-    list
-        hammer
-        box42
+    hammer
+    box42
     abort
     -> result: empty stack
 
-Implied "is-at" command:
+Duplicate input as a shortcut:
 
-    When operating on a single item (so there's no "list"), any Place (for
-    example, a Person or a Container) can be used as a command. This implies
-    the "is-at" command:
+    The "is-at" and "info" commands are both used much more than any of the
+    other commands, so there is a faster way to use these, by repeating the
+    input (scanning the barcode twice).
+
+    The repeated object is the only entry:
+        "<object> info"
+
+    There are multiple entries:
+        "is-at <object>"
 
     hammer
+    henkdevries
     henkdevries
     -> result: just like "hammer / is-at / henkdevries"
 
     hammer
     shelfB3
+    shelfB3
     -> result: hammer is (back) at shelf B3
 
     shelfB3
     LHQ
+    LHQ
     -> result: the shelf itself now has a location: LHQ
 
-    list
-        hammer
-        spanner
-        screwdriver
-        box42
+    hammer
+    spanner
+    screwdriver
+    box42
     -> result: still waiting for a command!
     henkdevries
+    henkdevries
     -> result: Henk got the hammer, spanner, screwdriver, and a box (of things)
+
+    hammer
+    hammer
+    -> Just like "hammer / info".
 
 
