@@ -6,18 +6,13 @@ is either in a Container, at a Place, or in the hands of a Person.
 Object hierachy:
 
     - Command
-    - Item
     - Thing
-        is Item
-        has Container|Person|Place location
-    - Container
-        is Item
-        is Place
-        has Container|Place location
-    - Place
-        is Item
-        has Place location
+        has Location
+    - Location
         can be "hidden", which also hides its Things from lists
+    - Container
+        does Thing
+        does Place
     - Person
         is-a Place
 
@@ -28,12 +23,10 @@ Input is given as a list of scanned barcodes. The list ends with a command,
 which then operates on the given list. A command can require further operands,
 given after the command.
 
-Command "is-at":
+Command "is-at", "@":
 
-    The second operand of is-at has to be a Place, or the special term
-    "last-item", which uses the last item from the first operand as the
-    location. "last-item" can be used if you accidentally scanned the location
-    before scanning "is-at".
+    The second operand of is-at has to be a Place. This command is implied when
+    scanning a Person after scanning one or more Things.
 
     hammer
     is-at
@@ -46,13 +39,6 @@ Command "is-at":
     is-at
     infodesk
     -> result: both hammer and spanner are now at infodesk
-
-    spanner
-    hammer
-    infodesk
-    is-at
-    last-item
-    -> result: same as above
 
     box42
     is-at
@@ -97,45 +83,4 @@ Command "cancel" or "abort":
     box42
     abort
     -> result: empty stack
-
-Duplicate input as a shortcut:
-
-    The "is-at" and "info" commands are both used much more than any of the
-    other commands, so there is a faster way to use these, by repeating the
-    input (scanning the barcode twice).
-
-    The repeated object is the only entry:
-        "<object> info"
-
-    There are multiple entries:
-        "is-at <object>"
-
-    hammer
-    henkdevries
-    henkdevries
-    -> result: just like "hammer / is-at / henkdevries"
-
-    hammer
-    shelfB3
-    shelfB3
-    -> result: hammer is (back) at shelf B3
-
-    shelfB3
-    LHQ
-    LHQ
-    -> result: the shelf itself now has a location: LHQ
-
-    hammer
-    spanner
-    screwdriver
-    box42
-    -> result: still waiting for a command!
-    henkdevries
-    henkdevries
-    -> result: Henk got the hammer, spanner, screwdriver, and a box (of things)
-
-    hammer
-    hammer
-    -> Just like "hammer / info".
-
 
