@@ -44,6 +44,7 @@ Whirlbook (draaiboek!)
         - Picking things up
         - Returning them
         - Fleet supervision
+        - Idea: put container at strategic locations (at hackerspaces) a few weeks before the event, everyone brings stuff and puts it in there, transport containers to field. (instead of doing all pickups and deliveries from/to everywhere.)
     - Driving things around on site for other teams (FIND SUBTEAMLEAD)
         - Things like beer benches, fences, floor boards, etc.
         - Golf carts
