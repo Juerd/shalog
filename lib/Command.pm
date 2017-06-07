@@ -5,15 +5,12 @@ role Command::Infix { }
 role Command::Unary { }
 role Command::Immediate { }
 
-class Command { method Str { "<{ self.^name }>" } }
+class Command { method Str { self.^shortname } }
 
 class Command::is-at is Command does Command::List does Command::Infix {
-    method infix-prompt (@stack) {
+    method prompt (@stack) {
         return "Where is @stack[0] now (location or person)? " if @stack <= 2;
         return "Where are these items now? ";
-    }
-    multi method execute (@stack, Any $new-location) {
-        die "$new-location is not a person or location";
     }
     multi method execute (@stack, Location $new-location) {
         @stack.pop if @stack.tail ~~ Command::is-at;
@@ -24,6 +21,9 @@ class Command::is-at is Command does Command::List does Command::Infix {
 
         say "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";
         @stack = ();
+    }
+    multi method execute (@stack, Any $new-location) {
+        die "$new-location is not a person or location";
     }
 }
 

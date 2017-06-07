@@ -48,12 +48,12 @@ class Entity {
         return to-json %hash;
     }
 
-    method would-recurse (Mu $to-be-contained) {
-        say self;
-        say $to-be-contained;
-        die;
-        return 0;
-    }
+#    method would-recurse (Mu $to-be-contained) {
+#        say self;
+#        say $to-be-contained;
+#        die;
+#        return 0;
+#    }
 }
 
 role Location { }
