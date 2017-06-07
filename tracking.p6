@@ -19,7 +19,7 @@ class Stack is Array {
     }
 
     method prompt (@stack: --> Str) {
-        return @stack.grep(Command).tail.?prompt(@stack);
+        return @stack.grep(*.can('prompt')).tail.?prompt(@stack);
     }
 
     method try-infix (@stack:) {
@@ -41,7 +41,31 @@ class Stack is Array {
     }
 }
 
+
 my @stack is Stack where Entity | Command::Infix | Command::Unary;
+
+sub create($id) {
+    print qq:to/END/;
+
+    What is '$id'?
+    '1' or 'thing':     Register '$id' as a new thing.
+    '2' or 'person':    Register '$id' as a new person.
+    '3' or 'place':     Register '$id' as a new place.
+    '4' or 'container': Register '$id' as a new container.
+    '0' or 'ignore':    Ignore this input (typo, scan error, etc.)
+    END
+
+    loop {
+        given prompt("create> ").trim {
+            when 1 | 'thing'     { return Thing.new(:$id); }
+            when 2 | 'person'    { return Person.new(:$id); }
+            when 3 | 'place'     { return Place.new(:$id); }
+            when 4 | 'container' { return Container.new(:$id); }
+            when 0 | 'ignore'    { return; }
+            default { note "$_ is not a valid response."; }
+        }
+    }
+}
 
 my Command %commands = (
     "is-at"  => Command::is-at.new,
@@ -54,16 +78,13 @@ my Command %commands = (
     "info"   => Command::info.new,
 );
 
-INPUT: while (1) {
+loop {
     @stack.try-infix;
     @stack.try-unary;
     @stack.print;
 
-    my $input = prompt(@stack.prompt // "> ").trim;
-
-    if %commands{$input} // Entity.load($input) -> $object {
-        $input = $object;
-    }
+    my $line = prompt(@stack.prompt // "> ").trim;
+    my $input = %commands{$line} // Entity.load($line) // create($line) // redo;
 
     given $input {
         when any(@stack) {
@@ -93,6 +114,8 @@ INPUT: while (1) {
                 @stack.push: $input;
             }
         }
-        default { note "Unknown input '$input' ignored."; }
+        default {
+            note "INPUT NOT RECOGNIZED";
+        }
     }
 }
