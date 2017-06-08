@@ -23,27 +23,21 @@ class Command {
     }
 
     method accepts-list($command: @stack --> Bool) {
-        if any(@stack) ~~ Command {
-            die "Cannot queue multiple commands";
-        }
+        die "Cannot queue multiple commands" if any(@stack) ~~ Command;
         return True;
     }
 }
 
 class Command::List is Command {
     method accepts-list($command: @stack --> Bool) {
-        if @stack == 0 {
-            die "$command cannot operate on an empty selection";
-        }
+        die "$command cannot operate on an empty selection" if @stack == 0;
         nextsame;
     }
 }
 
 class Command::Unary is Command {
     method accepts-list($command: @stack --> Bool) {
-        if @stack > 1 {
-            die "$command cannot operate on more than 1 item";
-        }
+        die "$command cannot operate on more than 1 item" if @stack > 1;
         nextsame;
     }
 }
