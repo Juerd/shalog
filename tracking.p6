@@ -1,7 +1,7 @@
 #!perl6
 
 use v6;
-use lib 'lib';
+use lib ~$*PROGRAM.resolve.sibling: 'lib';
 use Entity;
 use Command;
 use Color;
