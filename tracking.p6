@@ -19,7 +19,8 @@ class Stack is Array {
     }
 
     method prompt (@stack: --> Str) {
-        return @stack.grep(*.can('prompt')).tail.?prompt(@stack);
+        my $command = @stack.grep(Command).tail or return;
+        return "{ $command.?prompt(@stack) // "" }\n$command> ";
     }
 
     method try-infix (@stack:) {
@@ -40,9 +41,6 @@ class Stack is Array {
         @stack = ();
     }
 }
-
-
-my @stack is Stack where Entity | Command::Infix | Command::Unary;
 
 sub create($id) {
     print qq:to/END/;
@@ -67,55 +65,46 @@ sub create($id) {
     }
 }
 
-my Command %commands = (
-    "is-at"  => Command::is-at.new,
-    "@"      => Command::is-at.new,
-    "at"     => Command::is-at.new,
-    "abort"  => Command::abort.new,
-    "cancel" => Command::abort.new,
-    "help"   => Command::help.new,
-    "?"      => Command::help.new,
-    "info"   => Command::info.new,
-);
+sub handle-input (@stack, $input where Command | Entity --> Bool) {
+    given $input {
+        when any(@stack) {
+            note "Ignoring duplicate input.";
+            return False;
+        }
+        when Command::Immediate {
+            .execute: @stack;
+        }
+        when Command {
+            return False if not .accepts-list(@stack);
+            @stack.push: $input;
+        }
+        when Person {
+            proceed unless @stack and all(@stack) ~~ Lendable;
+            Command::is-at.new.execute: @stack, $input;
+        }
+        when Entity {
+            @stack.push: $input;
+        }
+    }
+    return True;
+}
+
+my @stack is Stack where Entity | Command::Infix | Command::Unary;
 
 loop {
-    @stack.try-infix;
-    @stack.try-unary;
     @stack.print;
 
     my $line = prompt(@stack.prompt // "> ").trim;
-    my $input = %commands{$line} // Entity.load($line) // create($line) // redo;
 
-    given $input {
-        when any(@stack) {
-            note "Ignoring duplicate input."
-        }
-        when Command {
-            when Command::Immediate {
-                .execute: @stack;
-            }
-            when any(@stack) ~~ Command {
-                note "Cannot queue multiple commands; ignoring.";
-            }
-            when not @stack and $input ~~ Command::List {
-                note "$input cannot operate on an empty selection; ignoring.";
-            }
-            when @stack > 1 and $input ~~ Command::Unary {
-                note "$input cannot operate on more than 1 item; ignoring.";
-            }
-            default {
-                @stack.push: $input;
-            }
-        }
-        when Entity {
-            if $input ~~ Person and @stack and all(@stack) ~~ Lendable {
-                Command::is-at.new.execute: @stack, $input;
-            } else {
-                @stack.push: $input;
-            }
-        }
-        default {
-            note "INPUT NOT RECOGNIZED";
-        }
+    if $line ~~ s/^\@\s*<before .>// {
+        handle-input @stack, Command::is-at.new or redo;
     }
+
+    handle-input @stack, Command.from-str($line)
+        // Entity.load($line)
+        // create($line)
+        // redo;
+
+    @stack.try-infix;
+    @stack.try-unary;
 }
