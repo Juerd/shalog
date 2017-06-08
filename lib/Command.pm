@@ -6,6 +6,7 @@ class Command::is-at { ... }
 class Command::abort { ... }
 class Command::help { ... }
 class Command::info { ... }
+class Command::clear { ... }
 
 class Command {
     method from-str (Command:U $: Str $str) {
@@ -13,6 +14,7 @@ class Command {
         return Command::abort.new if $str eq 'abort' | 'cancel';
         return Command::help.new  if $str eq 'help' | '?';
         return Command::info.new  if $str eq 'info';
+        return Command::clear.new if $str eq 'clear';
         return Nil;
     }
 
@@ -22,8 +24,7 @@ class Command {
 
     method accepts-list($command: @stack --> Bool) {
         if any(@stack) ~~ Command {
-            note "Cannot queue multiple commands";
-            return False;
+            die "Cannot queue multiple commands";
         }
         return True;
     }
@@ -32,8 +33,7 @@ class Command {
 class Command::List is Command {
     method accepts-list($command: @stack --> Bool) {
         if @stack == 0 {
-            note "$command cannot operate on an empty selection";
-            return False;
+            die "$command cannot operate on an empty selection";
         }
         nextsame;
     }
@@ -42,8 +42,7 @@ class Command::List is Command {
 class Command::Unary is Command {
     method accepts-list($command: @stack --> Bool) {
         if @stack > 1 {
-            note "$command cannot operate on more than 1 item";
-            return False;
+            die "$command cannot operate on more than 1 item";
         }
         nextsame;
     }
@@ -64,7 +63,7 @@ class Command::is-at is Command::List does Command::Infix {
         @stack».store;
 
         say "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";
-        @stack = ();
+        @stack.reset;
     }
     multi method execute (@stack, Any $new-location) {
         die "$new-location is not a person or location";
@@ -72,8 +71,7 @@ class Command::is-at is Command::List does Command::Infix {
 
     method accepts-list($command: @stack --> Bool) {
         if @stack.grep: * !~~ Lendable -> @wrong {
-            note "$command cannot be applied on @wrong.join(", ")";
-            return False;
+            die "$command cannot be applied on @wrong.join(", ")";
         }
         nextsame;
     }
@@ -81,8 +79,8 @@ class Command::is-at is Command::List does Command::Infix {
 
 class Command::abort is Command::Immediate {
     method execute (@stack) {
-        note "ABORTED.";
-        @stack = ();
+        @stack.reset;
+        die "ABORTED.";
     }
 }
 
@@ -101,5 +99,10 @@ class Command::info is Command::Unary {
     }
 }
 
+class Command::clear is Command::Immediate {
+    method execute (@) {
+        print "\e[2J\e[;H";
+    }
+}
 
 # vim: ft=perl6
