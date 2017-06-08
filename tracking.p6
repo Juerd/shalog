@@ -4,6 +4,7 @@ use v6;
 use lib 'lib';
 use Entity;
 use Command;
+use Color;
 
 class Stack is Array {
     method Str (@stack:) {
@@ -18,7 +19,7 @@ class Stack is Array {
         if $command.?prompt(@stack) -> $prompt {
             $p ~= "$prompt\n"
         }
-        return "$p\e[32;1m$command> \e[0;1m";
+        return $p ~ green("$command> ") ~ white;
     }
 
     method try-infix (@stack:) {
@@ -55,13 +56,13 @@ sub create($id) {
 
     my Entity $e;
     until $e {
-        given prompt("\e[33;1mcreate>\e[0;1m ").trim {
+        given prompt(yellow("create> ") ~ white).trim {
             when 1 | 'thing'     { $e = Thing.new(:$id); }
             when 2 | 'person'    { $e = Person.new(:$id); }
             when 3 | 'place'     { $e = Place.new(:$id); }
             when 4 | 'container' { $e = Container.new(:$id); }
             when 0 | 'ignore'    { return; }
-            default { note "\e[0m$_ is not a valid response."; }
+            default { reset-color; note "$_ is not a valid response."; }
         }
     }
     $e.store;
@@ -94,11 +95,11 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
 my @stack is Stack where Entity | Command::Infix | Command::Unary;
 
 loop {
-    print "\e[0m";
+    reset-color;
     @stack.print;
 
-    my $line = prompt(@stack.prompt // "\e[32;1m> \e[0;1m").trim;
-    print "\e[0m";
+    my $line = prompt(@stack.prompt // green("> ") ~ white).trim;
+    reset-color;
 
     next if $line eq "";
 
@@ -117,5 +118,5 @@ loop {
     @stack.try-infix;
     @stack.try-unary;
 
-    CATCH { default { note "\e[31;1m$_\e[0m\n"; } }
+    CATCH { default { note red($_), "\n"; } }
 }
