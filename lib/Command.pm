@@ -7,14 +7,16 @@ class Command::abort { ... }
 class Command::help { ... }
 class Command::info { ... }
 class Command::clear { ... }
+class Command::create { ... }
 
 class Command {
     method from-str (Command:U $: Str $str) {
-        return Command::is-at.new if $str eq 'is-at' | '@' | 'at';
-        return Command::abort.new if $str eq 'abort' | 'cancel';
-        return Command::help.new  if $str eq 'help' | '?';
-        return Command::info.new  if $str eq 'info';
-        return Command::clear.new if $str eq 'clear';
+        return Command::is-at.new  if $str eq 'is-at' | '@' | 'at';
+        return Command::abort.new  if $str eq 'abort' | 'cancel';
+        return Command::help.new   if $str eq 'help' | '?';
+        return Command::info.new   if $str eq 'info';
+        return Command::clear.new  if $str eq 'clear';
+        return Command::create.new if $str eq 'create' | 'new' | 'adduser';
         return Nil;
     }
 
@@ -96,6 +98,14 @@ class Command::info is Command::Unary {
 class Command::clear is Command::Immediate {
     method execute (@) {
         print "\e[2J\e[;H";
+    }
+}
+
+class Command::create is Command::Immediate {
+    method execute (@) {
+        say "To register a new entity, just try to use it and I will ask you "
+            ~ "if you want to create it, after which it is added to the "
+            ~ "selection for immediate use.";
     }
 }
 
