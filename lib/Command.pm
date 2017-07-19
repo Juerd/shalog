@@ -53,6 +53,10 @@ class Command::is-at is Command::List does Command::Infix {
     }
     multi method execute (@stack, Location $new-location) {
         @stack.pop if @stack.tail ~~ Command::is-at;
+
+        die "$new-location would cause infinite containment loop"
+            if $new-location.would-loop: any(@stack);
+
         @stack».is-at($new-location);
         @stack».store;
 
@@ -85,11 +89,18 @@ class Command::help is Command::Immediate {
 }
 
 class Command::info is Command::Unary {
-    multi method execute (Person $person) {
-        note "Not yet implemented."
+    multi method execute (Any $entity) {
+        note "info is not yet implemented for a { $entity.^name }."
     }
     multi method execute (Lendable $thing) {
-        say "$thing is currently at { $thing.location }\n";
+        if not $thing.location {
+            say "I don't know where $thing is.";
+            return;
+        }
+        say "$thing is currently at { $thing.location }";
+        if $thing.location ~~ Lendable {
+            Command::info.execute: $thing.location;
+        }
     }
 }
 

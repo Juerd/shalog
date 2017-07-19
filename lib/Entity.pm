@@ -1,38 +1,61 @@
+role Location { }
+
 class Entity {
     use JSON::Tiny;
+    use Color;
+
     my %cache;
 
     has $.id is rw;
 
-    multi method Str (Entity:D: ) { self.id }
+    multi method Str (Entity:D: ) { self.id ~ gray('(' ~ self.^name.lc ~ ')'); }
+
+    sub _file($id is copy --> IO) {
+        $id.=subst('/', ' ', :global);
+        return ("db/{ $id.lc }.json").IO;
+    }
 
     sub _load($id --> Entity) {
-        return %cache{$id} if %cache{$id}:exists;
+        return %cache{$id.lc} if %cache{$id.lc}:exists;
 
-        my $io = "$id.json".IO;
+        my $io = _file($id);
         $io.r or return;
         my $json = try $io.slurp or return;
 
         my %hash = from-json $json;
         my $class = %hash<class>:delete;
 
-        if (%hash<location>:exists) {
-            %hash<location> = Entity.load(%hash<location>);
+        if %hash<location>:exists {
+            my $location = Entity.load(%hash<location>);
+            if not $location {
+                note "$id was at %hash<location>, but that's gone!";
+                $location = Location;
+            }
+            %hash<location> = $location;
         }
-        %hash<id> = $id;
+        if %hash<id>.lc ne $id.lc {
+            note "LOADED $id AS %hash<id>, WHICH IS WEIRD.";
+        }
 
         $class ~~ /^ [ Thing | Container | Person | Place ] $/
             or die "Invalid class '$class' for $id";
 
-        return %cache{$id} = ::($class).new(|%hash);
+        my Entity $entity = ::($class).new(|%hash);
+        $entity.add-to-cache;
+
+        return $entity;
     }
 
     method load($id --> Entity) {
         return _load($id);
     }
 
+    method add-to-cache() {
+        %cache{$.id.lc} = self;
+    }
+
     method store {
-        spurt $.id ~ ".json", $.json;
+        spurt _file($.id), $.json;
     }
 
     method json {
@@ -40,7 +63,7 @@ class Entity {
         for self.^attributes -> $a {
             my $value = $a.get_value(self);
             if (defined $value) {
-                $value = ~$value if $value.isa(Entity);
+                $value = $value.id if $value.isa(Entity);
                 %hash{ $a.Str.substr(2) } = $value;
             }
         };
@@ -48,15 +71,10 @@ class Entity {
         return to-json %hash;
     }
 
-#    method would-recurse (Mu $to-be-contained) {
-#        say self;
-#        say $to-be-contained;
-#        die;
-#        return 0;
-#    }
+    method would-loop ($ --> Bool) {
+        return False
+    }
 }
-
-role Location { }
 
 role Lendable {
     has Location $.location;
@@ -65,6 +83,13 @@ role Lendable {
     method is-at(Location $new) {
         $!location = $new;
         @!location_history.push({ dt => ~DateTime.now, location => ~$new });
+    }
+
+    method would-loop(Entity $to-be-contained --> Bool) {
+        return True  if self.id eq $to-be-contained.id;
+        return False if not $.location;
+        return False if $.location !~~ Lendable;
+        return $.location.would-loop: $to-be-contained;
     }
 }
 

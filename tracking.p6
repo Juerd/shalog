@@ -65,6 +65,7 @@ sub create($id) {
             default { reset-color; note "$_ is not a valid response."; }
         }
     }
+    $e.add-to-cache;
     $e.store;
     return $e;
 }
@@ -96,6 +97,7 @@ my @stack is Stack where Entity | Command::Infix | Command::Unary;
 
 loop {
     reset-color;
+
     @stack.print;
 
     my $line = prompt(@stack.prompt // green("> ") ~ white).trim;
