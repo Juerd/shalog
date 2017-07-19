@@ -57,7 +57,7 @@ class Command::is-at is Command::List does Command::Infix {
         die "$new-location would cause infinite containment loop"
             if $new-location.would-loop: any(@stack);
 
-        @stack».is-at($new-location);
+        @stack».is-at: $new-location;
         @stack».store;
 
         say "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";

@@ -79,7 +79,7 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
             .execute: @stack;
         }
         when Command {
-            .accepts-list(@stack);
+            .accepts-list: @stack;
             @stack.push: $input;
         }
         when Person {

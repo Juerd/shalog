@@ -62,7 +62,7 @@ class Entity {
         my %hash;
         for self.^attributes -> $a {
             my $value = $a.get_value(self);
-            if (defined $value) {
+            if defined $value {
                 $value = $value.id if $value.isa(Entity);
                 %hash{ $a.Str.substr(2) } = $value;
             }
@@ -82,7 +82,7 @@ role Lendable {
 
     method is-at(Location $new) {
         $!location = $new;
-        @!location_history.push({ dt => ~DateTime.now, location => ~$new });
+        @!location_history.push: hash { dt => ~DateTime.now, location => ~$new };
     }
 
     method would-loop(Entity $to-be-contained --> Bool) {
