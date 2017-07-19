@@ -53,8 +53,6 @@ class Command::is-at is Command::List does Command::Infix {
     }
     multi method execute (@stack, Location $new-location) {
         @stack.pop if @stack.tail ~~ Command::is-at;
-        all(@stack) ~~ Lendable or die "Not all items on the stack are lendable";  # XXX test via own test method
-
         @stack».is-at($new-location);
         @stack».store;
 
