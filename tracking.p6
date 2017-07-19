@@ -24,9 +24,9 @@ class Stack is Array {
 
     method try-infix (@stack:) {
         return unless @stack >= 3 and @stack[* - 2] ~~ Command::Infix;
-        my $infix = @stack[* - 2];
+        my $infix-command = @stack[* - 2];
         my $post = @stack.pop;
-        $infix.execute: @stack, $post;
+        $infix-command.execute: @stack, $post;
     }
 
     method try-unary (@stack:) {
@@ -101,7 +101,7 @@ loop {
     my $line = prompt(@stack.prompt // green("> ") ~ white).trim;
     reset-color;
 
-    next if $line eq "";
+    redo if $line eq "";
 
     die "Input contains unsupported characters."
         if $line ~~ /<-[\x21..\x7E]>/;
@@ -120,3 +120,4 @@ loop {
 
     CATCH { default { note red($_), "\n"; } }
 }
+
