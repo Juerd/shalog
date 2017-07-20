@@ -1,5 +1,7 @@
 use Entity;
 
+class X::Aborted is Exception { }
+
 role Command::Infix { }
 
 class Command::is-at { ... }
@@ -78,7 +80,7 @@ class Command::is-at is Command::List does Command::Infix {
 class Command::abort is Command::Immediate {
     method execute (@stack) {
         @stack.reset;
-        die "ABORTED.";
+        die X::Aborted.new;
     }
 }
 

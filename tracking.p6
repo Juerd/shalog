@@ -120,6 +120,10 @@ loop {
     @stack.try-infix;
     @stack.try-unary;
 
-    CATCH { default { note red($_), "\n"; } }
+    CATCH {
+        when X::Aborted { note red "ABORTED.\n" }
+        when X::AdHoc { note "{ red "Error:" } $_\n" }
+        default { note red "Unexpected exception: $_.gist()\n" }
+    }
 }
 
