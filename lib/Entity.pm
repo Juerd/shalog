@@ -1,8 +1,10 @@
-role Location { }
+use Color;
+
+role Location { ... }
+role Lendable { ... }
 
 class Entity {
     use JSON::Tiny;
-    use Color;
 
     my %cache;
 
@@ -10,17 +12,17 @@ class Entity {
 
     multi method Str (Entity:D: ) { self.id ~ gray('(' ~ self.^name.lc ~ ')'); }
 
-    sub _file($id is copy --> IO) {
-        $id.=subst('/', ' ', :global);
-        return ("db/{ $id.lc }.json").IO;
+    method all-entities(Entity:U:) {
+        return gather {
+            for 'db'.IO.dir.grep(/'.json' $/) -> $file {
+                take Entity.load-from-file($file);
+            }
+        }
     }
 
-    sub _load($id --> Entity) {
-        return %cache{$id.lc} if %cache{$id.lc}:exists;
-
-        my $io = _file($id);
-        $io.r or return;
-        my $json = try $io.slurp or return;
+    method load-from-file(Entity:U: IO() $file) {
+        $file.r or return;
+        my $json = try $file.slurp or return;
 
         my %hash = from-json $json;
         my $class = %hash<class>:delete;
@@ -28,17 +30,14 @@ class Entity {
         if %hash<location>:exists {
             my $location = Entity.load(%hash<location>);
             if not $location {
-                note "$id was at %hash<location>, but that's gone!";
+                note "%hash<id> was at %hash<location>, but that's gone!";
                 $location = Location;
             }
             %hash<location> = $location;
         }
-        if %hash<id>.lc ne $id.lc {
-            note "LOADED $id AS %hash<id>, WHICH IS WEIRD.";
-        }
 
         $class ~~ /^ [ Thing | Container | Person | Place ] $/
-            or die "Invalid class '$class' for $id";
+            or die "Invalid class '$class' for %hash<id>";
 
         my Entity $entity = ::($class).new(|%hash);
         $entity.add-to-cache;
@@ -46,8 +45,22 @@ class Entity {
         return $entity;
     }
 
-    method load($id --> Entity) {
-        return _load($id);
+    sub _file($id is copy --> IO) {
+        $id.=subst('/', ' ', :global);
+        return ("db/{ $id.lc }.json").IO;
+    }
+
+    method load(Entity:U: $id --> Entity) {
+        return %cache{$id.lc} if %cache{$id.lc}:exists;
+
+        my $io = _file($id);
+        my $entity = Entity.load-from-file($io) or return;
+
+        if $entity.id.lc ne $id.lc {
+            note "LOADED $id AS { Entity.id }, WHICH IS WEIRD.";
+        }
+
+        return $entity;
     }
 
     method add-to-cache() {
@@ -76,6 +89,17 @@ class Entity {
     }
 }
 
+role Location {
+    method print-contents {
+        my Entity @items = Entity.all-entities.grep(Lendable)
+            .grep({ .location && .location.id.lc eq $.id.lc });
+
+        put "{ self } has { +@items } {
+            @items == 0 ?? 'items.' !! @items == 1 ?? 'item:' !! 'items:' }";
+        put yellow("* "), $_ for @items;
+    }
+}
+
 role Lendable {
     has Location $.location;
     has @.location_history;
@@ -86,10 +110,20 @@ role Lendable {
     }
 
     method would-loop(Entity $to-be-contained --> Bool) {
-        return True  if self.id eq $to-be-contained.id;
+        return True  if .id eq $to-be-contained.id;
         return False if not $.location;
         return False if $.location !~~ Lendable;
         return $.location.would-loop: $to-be-contained;
+    }
+
+    method print-location {
+        without $!location {
+            put "The location for { self } is unknown.";
+            return;
+        }
+
+        put "{ self } is currently at $!location.";
+        $!location.print-contents if $!location ~~ Lendable;
     }
 }
 

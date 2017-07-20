@@ -44,25 +44,30 @@ class Stack is Array {
 }
 
 sub create($id) {
-    print qq:to/END/;
-
-    What is '$id'?
-    '1' or 'thing':     Register '$id' as a new thing.
-    '2' or 'person':    Register '$id' as a new person.
-    '3' or 'place':     Register '$id' as a new place.
-    '4' or 'container': Register '$id' as a new container.
-    '0' or 'ignore':    Ignore this input (typo, scan error, etc.)
-    END
-
     my Entity $e;
-    until $e {
-        given prompt(yellow("create> ") ~ white).trim {
-            when 1 | 'thing'     { $e = Thing.new(:$id); }
-            when 2 | 'person'    { $e = Person.new(:$id); }
-            when 3 | 'place'     { $e = Place.new(:$id); }
-            when 4 | 'container' { $e = Container.new(:$id); }
-            when 0 | 'ignore'    { return; }
-            default { reset-color; note "$_ is not a valid response."; }
+
+    if $id ~~ /^ 'angel-'/ {
+        $e = Person.new(:$id);
+    } else {
+        print qq:to/END/;
+
+        What is '$id'?
+        '1' or 'thing':     Register '$id' as a new thing.
+        '2' or 'person':    Register '$id' as a new person.
+        '3' or 'place':     Register '$id' as a new place.
+        '4' or 'container': Register '$id' as a new container.
+        '0' or 'ignore':    Ignore this input (typo, scan error, etc.)
+        END
+
+        until $e {
+            given prompt(yellow("create> ") ~ white).trim {
+                when 1 | 'thing'     { $e = Thing.new(:$id); }
+                when 2 | 'person'    { $e = Person.new(:$id); }
+                when 3 | 'place'     { $e = Place.new(:$id); }
+                when 4 | 'container' { $e = Container.new(:$id); }
+                when 0 | 'ignore'    { return; }
+                default { reset-color; note "$_ is not a valid response."; }
+            }
         }
     }
     $e.add-to-cache;

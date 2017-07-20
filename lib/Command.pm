@@ -1,4 +1,5 @@
 use Entity;
+use Color;
 
 class X::Aborted is Exception { }
 
@@ -62,7 +63,7 @@ class Command::is-at is Command::List does Command::Infix {
         @stack».is-at: $new-location;
         @stack».store;
 
-        say "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";
+        put "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";
         @stack.reset;
     }
     multi method execute (@stack, Any $new-location) {
@@ -91,17 +92,10 @@ class Command::help is Command::Immediate {
 }
 
 class Command::info is Command::Unary {
-    multi method execute (Any $entity) {
-        note "info is not yet implemented for a { $entity.^name }."
-    }
-    multi method execute (Lendable $thing) {
-        if not $thing.location {
-            say "I don't know where $thing is.";
-            return;
-        }
-        say "$thing is currently at { $thing.location }";
-        if $thing.location ~~ Lendable {
-            Command::info.execute: $thing.location;
+    method execute(Entity $entity) {
+        given $entity {
+            .print-contents when Location;
+            .print-location when Lendable;
         }
     }
 }
@@ -114,7 +108,7 @@ class Command::clear is Command::Immediate {
 
 class Command::create is Command::Immediate {
     method execute (@) {
-        say "To register a new entity, just try to use it and I will ask you "
+        put "To register a new entity, just try to use it and I will ask you "
             ~ "if you want to create it, after which it is added to the "
             ~ "selection for immediate use.";
     }
