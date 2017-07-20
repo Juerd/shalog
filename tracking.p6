@@ -73,7 +73,7 @@ sub create($id) {
 sub handle-input (@stack, $input where Command | Entity --> Bool) {
     given $input {
         when any(@stack) {
-            die "Ignoring duplicate input.";
+            die "$input is already selected; ignoring duplicate input.";
         }
         when Command::Immediate {
             .execute: @stack;
