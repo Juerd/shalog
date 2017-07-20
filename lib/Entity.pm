@@ -131,5 +131,31 @@ class Person    is Entity does Location { }
 class Place     is Entity does Location { }
 class Thing     is Entity does Lendable { }
 class Container is Entity does Lendable does Location { }
+use MONKEY-TYPING;
+
+augment class Entity {
+    sub prompt-type (Str $prompt, Str $id --> Any:U) is export {
+        print qq:to/END/;
+
+        $prompt
+        '1' or 'thing':     Register '$id' as a new thing.
+        '2' or 'person':    Register '$id' as a new person.
+        '3' or 'place':     Register '$id' as a new place.
+        '4' or 'container': Register '$id' as a new container.
+        '0' or 'ignore':    Ignore this input (typo, scan error, etc.)
+        END
+
+        loop {
+            given prompt(yellow("create> ") ~ white).trim {
+                when 1 | 'thing'     { return Thing; }
+                when 2 | 'person'    { return Person; }
+                when 3 | 'place'     { return Place; }
+                when 4 | 'container' { return Container; }
+                when 0 | 'ignore'    { return Any; }
+                default { reset-color; note "$_ is not a valid response."; }
+            }
+        }
+    }
+}
 
 # vim: ft=perl6

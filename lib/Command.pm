@@ -11,15 +11,17 @@ class Command::help { ... }
 class Command::info { ... }
 class Command::clear { ... }
 class Command::create { ... }
+class Command::generate { ... }
 
 class Command {
-    method from-str (Command:U $: Str $str) {
-        return Command::is-at.new  if $str eq 'is-at' | '@' | 'at';
-        return Command::abort.new  if $str eq 'abort' | 'cancel';
-        return Command::help.new   if $str eq 'help' | '?';
-        return Command::info.new   if $str eq 'info';
-        return Command::clear.new  if $str eq 'clear';
-        return Command::create.new if $str eq 'create' | 'new' | 'adduser';
+    method from-str (Command:U: Str $str) {
+        return Command::is-at.new    if $str eq 'is-at' | '@' | 'at';
+        return Command::abort.new    if $str eq 'abort' | 'cancel';
+        return Command::help.new     if $str eq 'help' | '?';
+        return Command::info.new     if $str eq 'info';
+        return Command::clear.new    if $str eq 'clear';
+        return Command::create.new   if $str eq 'create' | 'new' | 'adduser';
+        return Command::generate.new if $str eq 'generate';
         return Nil;
     }
 
@@ -111,6 +113,42 @@ class Command::create is Command::Immediate {
         put "To register a new entity, just try to use it and I will ask you "
             ~ "if you want to create it, after which it is added to the "
             ~ "selection for immediate use.";
+    }
+}
+
+class Command::generate is Command::Immediate {
+    method execute (@stack) {
+        put "Only use this function if you know what you're doing. "
+            ~ "Type 'abort' to abort.";
+
+        my $prefix = prompt(yellow "prefix> ").trim;
+        die X::Aborted.new if $prefix eq 'abort' | '';
+
+        my subset PosInt of Int where * > 0;
+
+        my PosInt $first = 1;
+        if Entity.all-entities.grep: { .id ~~ /^$prefix '#' \d+ $/ } -> @existing {
+            $first = 1 + @existing».id».match(/\d+ $/)».Int.max;
+        }
+        $first = +prompt(yellow "first [$first]> ").trim || $first;
+
+        my PosInt $num = +prompt(yellow "number> ") || die X::Aborted.new;
+        my PosInt $last = $first + $num - 1;
+
+        my Any:U $type = prompt-type(
+            "What are '$prefix#$first-$last'?", "$prefix#$first-$last"
+        );
+        die X::Aborted.new if $type !~~ Entity;
+
+        for $first..$last -> $i {
+            my $id = "$prefix#$i";
+            die "$id already exists; aborting." if Entity.load($id);
+            my $e = $type.new(:$id);
+            $e.add-to-cache;
+            $e.store;
+
+            @stack.push: $e;
+        }
     }
 }
 
