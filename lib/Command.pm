@@ -1,5 +1,6 @@
 use Entity;
 use Color;
+use Prompt;
 
 class X::Aborted is Exception { }
 
@@ -130,7 +131,7 @@ class Command::generate is Command::Immediate {
         if Entity.all-entities.grep: { .id ~~ /^$prefix '#' \d+ $/ } -> @existing {
             $first = 1 + @existing».id».match(/\d+ $/)».Int.max;
         }
-        $first = +prompt(yellow "first [$first]> ").trim || $first;
+        $first = +prompt(yellow("first> "), :default(~$first)).trim || $first;
 
         my PosInt $num = +prompt(yellow "number> ") || die X::Aborted.new;
         my PosInt $last = $first + $num - 1;

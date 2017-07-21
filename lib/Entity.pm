@@ -1,4 +1,5 @@
 use Color;
+use Prompt;
 
 role Location { ... }
 role Lendable { ... }
@@ -145,15 +146,23 @@ augment class Entity {
         '0' or 'ignore':    Ignore this input (typo, scan error, etc.)
         END
 
+        my %options =
+            1 | 'thing'     => Thing,
+            2 | 'person'    => Person,
+            3 | 'place'     => Place,
+            4 | 'container' => Container,
+            0 | 'ignore'    => Any;
+
         loop {
-            given prompt(yellow("create> ") ~ white).trim {
-                when 1 | 'thing'     { return Thing; }
-                when 2 | 'person'    { return Person; }
-                when 3 | 'place'     { return Place; }
-                when 4 | 'container' { return Container; }
-                when 0 | 'ignore'    { return Any; }
-                default { reset-color; note "$_ is not a valid response."; }
+            my $input = prompt(
+                yellow("create> ") ~ white, :tab(%options.keys)
+            ).trim;
+
+            if %options{$input}:exists {
+                return %options{$input};
             }
+            reset-color;
+            note "$input is not a valid response.";
         }
     }
 }

@@ -5,6 +5,7 @@ use lib ~$*PROGRAM.resolve.sibling: 'lib';
 use Entity;
 use Command;
 use Color;
+use Prompt;
 
 class Stack is Array {
     method Str (@stack:) {
@@ -89,7 +90,8 @@ loop {
 
     @stack.print;
 
-    my $line = prompt(@stack.prompt // green("> ") ~ white).trim;
+    my @tab := Entity.all-entities».id;
+    my $line = prompt(@stack.prompt // green("> ") ~ white, :@tab).trim;
     reset-color;
 
     redo if $line eq "";
@@ -111,7 +113,7 @@ loop {
 
     CATCH {
         when X::Aborted { note red "ABORTED.\n" }
-        when X::AdHoc { note "{ red "Error:" } $_\n" }
+        when X::AdHoc { note "{ red "Error:" } $_.gist()\n" }
         default { note red "Unexpected exception: $_.gist()\n" }
     }
 }
