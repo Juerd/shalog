@@ -14,8 +14,17 @@ class Entity {
     multi method Str (Entity:D: ) { self.id ~ gray('(' ~ self.^name.lc ~ ')'); }
 
     method all-entities(Entity:U:) {
-        return gather {
-            for 'db'.IO.dir.grep(/'.json' $/) -> $file {
+        state $old-mtime;
+        state @cached;
+
+        my $path = 'db'.IO;
+
+        my $mtime = $path.modified;
+        return @cached if $old-mtime and $old-mtime == $mtime;
+        $old-mtime = $mtime;
+
+        return @cached = gather {
+            for $path.dir.grep(/'.json' $/) -> $file {
                 take Entity.load-from-file($file);
             }
         }
