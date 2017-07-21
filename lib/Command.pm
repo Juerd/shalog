@@ -15,14 +15,21 @@ class Command::create { ... }
 class Command::generate { ... }
 
 class Command {
+    my %commands =
+        'is-at' | '@' | 'at'         => Command::is-at,
+        'abort' | 'cancel'           => Command::abort,
+        'help' | '?'                 => Command::help,
+        'info'                       => Command::info,
+        'clear'                      => Command::clear,
+        'create' | 'new' | 'adduser' => Command::create,
+        'generate'                   => Command::generate;
+
+    method all-commands (Command:U:) {
+        return %commands.keys.sort;
+    }
+
     method from-str (Command:U: Str $str) {
-        return Command::is-at.new    if $str eq 'is-at' | '@' | 'at';
-        return Command::abort.new    if $str eq 'abort' | 'cancel';
-        return Command::help.new     if $str eq 'help' | '?';
-        return Command::info.new     if $str eq 'info';
-        return Command::clear.new    if $str eq 'clear';
-        return Command::create.new   if $str eq 'create' | 'new' | 'adduser';
-        return Command::generate.new if $str eq 'generate';
+        return %commands{$str}.new if %commands{$str}:exists;
         return Nil;
     }
 

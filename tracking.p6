@@ -90,7 +90,7 @@ loop {
 
     @stack.print;
 
-    my @tab := Entity.all-entities».id;
+    my @tab = flat Entity.all-entities».id, Command.all-commands;
     my $line = prompt(@stack.prompt // green("> ") ~ white, :@tab).trim;
     reset-color;
 
