@@ -68,13 +68,13 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
         when Command::Immediate {
             .execute: @stack;
         }
+        when Command::Infix | Command::Unary {
+            .accepts-list: @stack;
+            @stack.push: $input;
+        }
         when Command::List {
             .accepts-list: @stack;
             .execute: @stack;
-        }
-        when Command {
-            .accepts-list: @stack;
-            @stack.push: $input;
         }
         when Person {
             proceed unless @stack and all(@stack) ~~ Lendable;

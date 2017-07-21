@@ -168,7 +168,7 @@ class Command::print is Command::List {
 
         What kind of labels do you want?
         '1' or 'barcode':   Linear 1D barcodes (narrow: screwdrivers etc.)
-        '2' or 'aztec':     Linear 2D codes (square, redundant, recommended)
+        '2' or 'aztec':     Square 2D codes (square, redundant, recommended)
         '3' or 'text':      Just text (not yet implemented)
         '0' or 'ignore':    Don't print any barcodes
         END
@@ -183,10 +183,12 @@ class Command::print is Command::List {
             when 1 | 'barcode' {
                 temp $*CWD = 'ptouch-770';
                 run 'perl', 'barcode.pl', @stack.map: *.id;
+                print "Printing barcode{ @stack > 1 ?? "s" !! "" }...\n\n";
             }
             when 2 | 'aztec' {
                 temp $*CWD = 'ptouch-770';
                 run 'perl', 'aztec.pl', @stack.map: *.id;
+                print "Printing square code{ @stack > 1 ?? "s" !! "" }...\n\n";
             }
             when 3 | 'text' {
                 die "Text barcodes are not yet implemented.";
@@ -198,7 +200,7 @@ class Command::print is Command::List {
                 die "Invalid label type $type; ignoring print command.";
             }
         }
-        put "Note: selection kept. Type 'abort' to clear the selection.";
+        print "Note: selection kept. Type 'abort' to clear the selection.\n\n";
     }
 }
 
