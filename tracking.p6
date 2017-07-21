@@ -113,7 +113,7 @@ loop {
 
     CATCH {
         when X::Aborted { note red "ABORTED.\n" }
-        when X::AdHoc { note "{ red "Error:" } $_.gist()\n" }
+        when X::AdHoc { note "{ red "Error:" } $_\n" }
         default { note red "Unexpected exception: $_.gist()\n" }
     }
 }
