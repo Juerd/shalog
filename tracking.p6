@@ -65,7 +65,7 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
         when any(@stack) {
             die "$input is already selected; ignoring duplicate input.";
         }
-        when Command::Immediate {
+        when Command::Immediate | Command::List {
             .execute: @stack;
         }
         when Command {

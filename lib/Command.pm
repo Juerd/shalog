@@ -13,6 +13,7 @@ class Command::info { ... }
 class Command::clear { ... }
 class Command::create { ... }
 class Command::generate { ... }
+class Command::print { ... }
 
 class Command {
     my %commands =
@@ -22,7 +23,8 @@ class Command {
         'info'                       => Command::info,
         'clear'                      => Command::clear,
         'create' | 'new' | 'adduser' => Command::create,
-        'generate'                   => Command::generate;
+        'generate'                   => Command::generate,
+        'print'                      => Command::print;
 
     method all-commands (Command:U:) {
         return %commands.keys.sort;
@@ -157,6 +159,46 @@ class Command::generate is Command::Immediate {
 
             @stack.push: $e;
         }
+    }
+}
+
+class Command::print is Command::List {
+    method execute (@stack) {
+        print qq:to/END/;
+
+        What kind of labels do you want?
+        '1' or 'barcode':   Linear 1D barcodes (narrow: screwdrivers etc.)
+        '2' or 'aztec':     Linear 2D codes (square, redundant, recommended)
+        '3' or 'text':      Just text (not yet implemented)
+        '0' or 'ignore':    Don't print any barcodes
+        END
+
+        my $type = prompt(
+            yellow("label> ") ~ white,
+            :tab<barcode aztec text ignore>
+        ) until $type.defined;
+        reset-color;
+
+        given $type {
+            when 1 | 'barcode' {
+                temp $*CWD = 'ptouch-770';
+                run 'perl', 'barcode.pl', @stack.map: *.id;
+            }
+            when 2 | 'aztec' {
+                temp $*CWD = 'ptouch-770';
+                run 'perl', 'aztec.pl', @stack.map: *.id;
+            }
+            when 3 | 'text' {
+                die "Text barcodes are not yet implemented.";
+            }
+            when 0 | 'ignore' {
+                put "Ignoring print command."
+            }
+            default {
+                die "Invalid label type $type; ignoring print command.";
+            }
+        }
+        put "Note: selection kept. Type 'abort' to clear the selection.";
     }
 }
 
