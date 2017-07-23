@@ -68,7 +68,10 @@ sub prompt(Str $prompt is copy, Str :$default = "", :@tab) is export {
     $rl.redisplay();
 
     loop {
-        return $input with $input;
+        with $input {
+            $rl.add-history: $input;
+            return $input;
+        }
         rl_callback_read_char();
     }
 };
