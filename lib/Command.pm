@@ -66,8 +66,37 @@ class Command::Unary is Command {
         nextsame;
     }
 }
+
 class Command::Immediate is Command { }
 
+class Command::help is Command::Immediate {
+    method execute (@) {
+        print qq:to/END/;
+
+        { white 'General commands:'}
+            help                Print this help text
+            generate            Generate a bunch of homogenous items
+            clear               Clear the screen
+        { white 'List operations:' }
+            is-at <location>    Store the new location
+            stays-at <location> Store the new permanent location
+            stays-there         Make the current location permanent
+            <person>            Short for "is-at <location>"
+            print               Print labels for selected items
+        { white 'Single-item operations:' }
+            info                Print contents and/or location
+        { white 'Stack manipulation:' }
+            <entity>            Add entity to selection
+            pop                 Remove last item from selection
+            abort               Empty selection
+            restore             Restore selection
+
+        Each part of a command is entered on a line by itself.
+        Every command or item can be scanned from a barcode, or typed by hand.
+
+        END
+    }
+}
 
 class Command::is-at is Command::List does Command::Infix {
     method prompt (@stack) {
@@ -119,12 +148,6 @@ class Command::abort is Command::Immediate {
     method execute (@stack) {
         @stack.reset;
         die X::Aborted.new;
-    }
-}
-
-class Command::help is Command::Immediate {
-    method execute (@) {
-        note "Help function is not implemented yet. You're on your own... :D";
     }
 }
 
