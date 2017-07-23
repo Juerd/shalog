@@ -14,6 +14,7 @@ class Command::clear { ... }
 class Command::create { ... }
 class Command::generate { ... }
 class Command::print { ... }
+class Command::pop { ... }
 
 class Command {
     my %commands =
@@ -24,7 +25,8 @@ class Command {
         'clear'                      => Command::clear,
         'create' | 'new' | 'adduser' => Command::create,
         'generate'                   => Command::generate,
-        'print'                      => Command::print;
+        'print'                      => Command::print,
+        'pop'                        => Command::pop;
 
     method all-commands (Command:U:) {
         return %commands.keys.sort;
@@ -201,6 +203,12 @@ class Command::print is Command::List {
             }
         }
         print "Note: selection kept. Type 'abort' to clear the selection.\n\n";
+    }
+}
+
+class Command::pop is Command::List {
+    method execute (@stack) {
+        @stack.pop;
     }
 }
 
