@@ -120,7 +120,7 @@ role Lendable {
     }
 
     method would-loop(Entity $to-be-contained --> Bool) {
-        return True  if .id eq $to-be-contained.id;
+        return True  if $.id eq $to-be-contained.id;
         return False if not $.location;
         return False if $.location !~~ Lendable;
         return $.location.would-loop: $to-be-contained;
