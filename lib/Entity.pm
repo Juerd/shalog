@@ -112,11 +112,14 @@ role Location {
 
 role Lendable {
     has Location $.location;
-    has @.location_history;
+    has $.location_history;
 
     method is-at(Location $new) {
         $!location = $new;
-        @!location_history.push: hash { dt => ~DateTime.now, location => ~$new };
+        $!location_history.push: hash {
+            dt => ~DateTime.now,
+            location => $new.id
+        };
     }
 
     method would-loop(Entity $to-be-contained --> Bool) {
@@ -126,14 +129,26 @@ role Lendable {
         return $.location.would-loop: $to-be-contained;
     }
 
-    method print-location {
+    method print-location (Bool :$history = True) {
         without $!location {
             put "The location for { self } is unknown.";
             return;
         }
 
+        if ($history and $!location_history.elems) {
+            my $max = 5;
+            my @prev = @($!location_history)».{'location'};
+            # These are just id's, but the pretty printing with type is not
+            # wanted here anyway.
+            @prev.pop;  # discard current
+            @prev.=tail($max);
+            @prev.push: "(...)" if $!location_history.elems > $max;
+
+            put "{ self } was previously at @prev.reverse.join(", ").";
+        }
+
         put "{ self } is currently at $!location.";
-        $!location.print-contents if $!location ~~ Lendable;
+        $!location.print-location(:!history) if $!location ~~ Lendable;
     }
 }
 
