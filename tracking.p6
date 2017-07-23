@@ -8,6 +8,8 @@ use Color;
 use Prompt;
 
 class Stack is Array {
+    has @previous;
+
     method Str (@stack:) {
         my @entities = @stack.grep: Entity;
         return "Selection: { @entities ?? @entities.join(", ") !! "(empty)" }\n";
@@ -40,7 +42,11 @@ class Stack is Array {
 
     method reset (@stack:) {
         print "\n";
+        @previous = @stack.grep: none Command;
         @stack = ();
+    }
+    method restore (@stack:) {
+        @stack = @previous;
     }
 }
 

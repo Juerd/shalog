@@ -7,6 +7,8 @@ class X::Aborted is Exception { }
 role Command::Infix { }
 
 class Command::is-at { ... }
+class Command::stays-at { ... }
+class Command::stays-there { ... }
 class Command::abort { ... }
 class Command::help { ... }
 class Command::info { ... }
@@ -15,10 +17,13 @@ class Command::create { ... }
 class Command::generate { ... }
 class Command::print { ... }
 class Command::pop { ... }
+class Command::restore { ... }
 
 class Command {
     my %commands =
         'is-at' | '@' | 'at'         => Command::is-at,
+        'stays-at'                   => Command::stays-at,
+        'stays-there'                => Command::stays-there,
         'abort' | 'cancel'           => Command::abort,
         'help' | '?'                 => Command::help,
         'info'                       => Command::info,
@@ -26,7 +31,8 @@ class Command {
         'create' | 'new' | 'adduser' => Command::create,
         'generate'                   => Command::generate,
         'print'                      => Command::print,
-        'pop'                        => Command::pop;
+        'pop'                        => Command::pop,
+        'restore'                    => Command::restore;
 
     method all-commands (Command:U:) {
         return %commands.keys.sort;
@@ -68,19 +74,20 @@ class Command::is-at is Command::List does Command::Infix {
         return "Where is @stack[0] now (location or person)? " if @stack <= 2;
         return "Where are these items now? ";
     }
-    multi method execute (@stack, Location $new-location) {
+    multi method execute (@stack, Location $new-location, Bool :$stays = False) {
         @stack.pop if @stack.tail ~~ Command::is-at;
 
         die "$new-location would cause infinite containment loop"
             if $new-location.would-loop: any(@stack);
 
-        @stack».is-at: $new-location;
+        @stack».is-at: $new-location, :$stays;
         @stack».store;
+        dd @stack;
 
         put "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";
         @stack.reset;
     }
-    multi method execute (@stack, Any $new-location) {
+    multi method execute (@, Any $new-location, Bool :$stays) {
         die "$new-location is not a person or location";
     }
 
@@ -89,6 +96,22 @@ class Command::is-at is Command::List does Command::Infix {
             die "$command cannot be applied on @wrong.join(", ")";
         }
         nextsame;
+    }
+}
+
+class Command::stays-at is Command::is-at {
+    method execute (@stack, Any $new-location) {
+        nextwith(@stack, $new-location, :stays);
+    }
+}
+
+class Command::stays-there is Command::List {
+    method execute (@stack) {
+        for @stack -> $entity {
+            $entity.is-at: $entity.location, :stays;
+            $entity.store;
+        }
+        @stack.reset;
     }
 }
 
@@ -209,6 +232,13 @@ class Command::print is Command::List {
 class Command::pop is Command::List {
     method execute (@stack) {
         @stack.pop;
+    }
+}
+
+class Command::restore is Command::Immediate {
+    method execute (@stack) {
+        die "Cannot restore non-empty stack." if @stack;
+        @stack.restore;
     }
 }
 

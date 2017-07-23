@@ -106,19 +106,22 @@ role Location {
 
         put "{ self } has { +@items } {
             @items == 0 ?? 'items.' !! @items == 1 ?? 'item:' !! 'items:' }";
-        put yellow("* "), $_ for @items;
+        put yellow("* "), $_, (.stays ?? " (permanent)" !! "") for @items;
     }
 }
 
 role Lendable {
     has Location $.location;
     has $.location_history;
+    has Bool $.stays = False;
 
-    method is-at(Location $new) {
+    method is-at(Location $new, Bool :$stays = False) {
         $!location = $new;
+        $!stays = $stays;
         $!location_history.push: hash {
             dt => ~DateTime.now,
-            location => $new.id
+            location => $new.id,
+            stays => $stays,
         };
     }
 
@@ -137,7 +140,7 @@ role Lendable {
 
         if ($history and $!location_history.elems) {
             my $max = 5;
-            my @prev = @($!location_history)».{'location'};
+            my @prev = @($!location_history)».{'location'}.squish;
             # These are just id's, but the pretty printing with type is not
             # wanted here anyway.
             @prev.pop;  # discard current
@@ -147,7 +150,9 @@ role Lendable {
             put "{ self } was previously at @prev.reverse.join(", ").";
         }
 
-        put "{ self } is currently at $!location.";
+        my $may-stay = $!stays ?? " and may stay there!" !! ".";
+        put "{ self } is currently at $!location$may-stay";
+
         $!location.print-location(:!history) if $!location ~~ Lendable;
     }
 }
