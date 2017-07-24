@@ -114,7 +114,8 @@ class Command::is-at is Command::List does Command::Infix {
 
         my (:@accepted, :@rejected) := @stack.classify: sub ($entity) {
             $new-location ~~ Person or return 'accepted';
-            my @rg = $entity.?requires-groups.?words or return 'accepted';
+            $entity.?requires-groups or return 'accepted';
+            my @rg = $entity.requires-groups.words or return 'accepted';
 
             # subset of or equal to
             @rg (<=) $new-location.groups.?words and return 'accepted';
