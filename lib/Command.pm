@@ -107,8 +107,6 @@ class Command::is-at is Command::List does Command::Infix {
         return "Where are these items now? ";
     }
     multi method execute (@stack, Location $new-location, Bool :$stays = False) {
-        @stack.pop if @stack.tail ~~ Command::is-at;
-
         die "$new-location would cause infinite containment loop"
             if $new-location.would-loop: any(@stack);
 
@@ -291,8 +289,10 @@ class Command::restore is Command::Immediate {
 
 class Command::edit-metadata is Command::Unary {
     method execute (Entity $entity) {
-        use Prompt; 
-        my %tab = groups => <teamlead driver manitou>;
+        use Prompt;
+        my @groups = <teamlead driver manitou>;
+        my %tab = groups => @groups,
+                  requires-groups => @groups;
 
         for <comment owner requires-groups groups> -> $attr {
             my $m = $entity.^lookup: $attr or next;

@@ -27,16 +27,17 @@ class Stack is Array {
 
     method try-infix (@stack:) {
         return unless @stack >= 3 and @stack[* - 2] ~~ Command::Infix;
-        my $infix-command = @stack[* - 2];
         my $post = @stack.pop;
+        my $infix-command = @stack.pop;
+        @stack».update;
         $infix-command.execute: @stack, $post;
     }
 
     method try-unary (@stack:) {
         return unless @stack == 2 and one(@stack) ~~ Command::Unary;
+        @stack.grep(none Command)».update;
         @stack.head.execute: @stack.tail if @stack.head ~~ Command::Unary;
         @stack.tail.execute: @stack.head if @stack.tail ~~ Command::Unary;
-        # XXX error handling?
         @stack.reset;
     }
 
@@ -72,6 +73,7 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
             die "$input is already selected; ignoring duplicate input.";
         }
         when Command::Immediate {
+            @stack».update;
             .execute: @stack;
         }
         when Command::Infix | Command::Unary {
@@ -79,11 +81,13 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
             @stack.push: $input;
         }
         when Command::List {
+            @stack».update;
             .accepts-list: @stack;
             .execute: @stack;
         }
         when Person {
             proceed unless @stack and all(@stack) ~~ Lendable;
+            @stack».update;
             Command::is-at.new.execute: @stack, $input;
         }
         when Entity {

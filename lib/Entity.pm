@@ -36,7 +36,6 @@ class Entity {
         my $json = try $file.slurp or return;
 
         my %hash = from-json $json;
-        my $class = %hash<class>:delete;
 
         if %hash<location>:exists {
             my $location = Entity.load(%hash<location>);
@@ -47,15 +46,17 @@ class Entity {
             %hash<location> = $location;
         }
 
-        $class ~~ /^ [ Thing | Container | Person | Place ] $/
-            or die "Invalid class '$class' for %hash<id>";
+        %hash<class> ~~ /^ [ Thing | Container | Person | Place ] $/
+            or die "Invalid class '%hash<class>' for %hash<id>";
 
-        return $class, %hash;
+        return %hash;
     }
 
 
-    method load-from-file(Entity:U: IO() $file --> Entity:D) {
-        my ($class, %hash) = hash-from-file $file;
+    method load-from-file(Entity:U: IO() $file) {
+        my %hash = hash-from-file($file) || return;
+        my $class = %hash<class>:delete;
+
         my $entity = ::($class).new: |%hash;
         $entity.add-to-cache;
 
@@ -81,9 +82,14 @@ class Entity {
     }
 
     method update() {
+        # Poor man's concurrency: reload the item from disk.
+        # Race conditions are unlikely because the same thing will usually
+        # not be updated at different stations.
         my $io = file($!id);
-        my ($class, %hash) = hash-from-file($io);
+        my %hash = hash-from-file($io);
+        my $class = %hash<class>:delete;
         $class eq self.^name or die "$!id CHANGED ITS TYPE: IMPOSSIBLE.";
+
         self.BUILDALL((), %hash);
     }
 
