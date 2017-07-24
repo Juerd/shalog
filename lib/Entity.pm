@@ -31,7 +31,7 @@ class Entity {
         }
     }
 
-    method load-from-file(Entity:U: IO() $file) {
+    sub hash-from-file(IO() $file) {
         $file.r or return;
         my $json = try $file.slurp or return;
 
@@ -50,13 +50,19 @@ class Entity {
         $class ~~ /^ [ Thing | Container | Person | Place ] $/
             or die "Invalid class '$class' for %hash<id>";
 
-        my Entity $entity = ::($class).new(|%hash);
+        return $class, %hash;
+    }
+
+
+    method load-from-file(Entity:U: IO() $file --> Entity:D) {
+        my ($class, %hash) = hash-from-file $file;
+        my $entity = ::($class).new: |%hash;
         $entity.add-to-cache;
 
         return $entity;
     }
 
-    sub _file($id is copy --> IO) {
+    sub file($id is copy --> IO) {
         $id.=subst('/', ' ', :global);
         return ("db/{ $id.lc }.json").IO;
     }
@@ -64,7 +70,7 @@ class Entity {
     method load(Entity:U: $id --> Entity) {
         return %cache{$id.lc} if %cache{$id.lc}:exists;
 
-        my $io = _file($id);
+        my $io = file($id);
         my $entity = Entity.load-from-file($io) or return;
 
         if $entity.id.lc ne $id.lc {
@@ -74,12 +80,19 @@ class Entity {
         return $entity;
     }
 
+    method update() {
+        my $io = file($!id);
+        my ($class, %hash) = hash-from-file($io);
+        $class eq self.^name or die "$!id CHANGED ITS TYPE: IMPOSSIBLE.";
+        self.BUILDALL((), %hash);
+    }
+
     method add-to-cache() {
         %cache{$.id.lc} = self;
     }
 
     method store {
-        spurt _file($.id), $.json;
+        spurt file($.id), $.json;
     }
 
     method json {

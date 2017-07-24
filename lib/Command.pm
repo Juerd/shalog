@@ -292,11 +292,15 @@ class Command::restore is Command::Immediate {
 class Command::edit-metadata is Command::Unary {
     method execute (Entity $entity) {
         use Prompt; 
-        my %tab = groups => [<teamlead driver manitou>];
+        my %tab = groups => <teamlead driver manitou>;
 
         for <comment owner requires-groups groups> -> $attr {
             my $m = $entity.^lookup: $attr or next;
-            $entity.$m = prompt yellow($attr ~ "> "), :default($entity.$m//'');
+
+            $entity.$m = prompt
+                yellow($attr ~ "> "),
+                :default($entity.$m // ''),
+                :tab(%tab{$attr} // []);
         }
         $entity.store;
     }
