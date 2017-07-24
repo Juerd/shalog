@@ -116,6 +116,7 @@ role Lendable {
     has $.location_history;
     has Bool $.stays = False;
     has $.owner is rw;
+    has $.requires-groups is rw;
 
     method is-at(Location $new, Bool :$stays = False) {
         $!location = $new;
@@ -159,7 +160,9 @@ role Lendable {
     }
 }
 
-class Person    is Entity does Location { }
+class Person    is Entity does Location {
+    has $.groups is rw;
+}
 class Place     is Entity does Location { }
 class Thing     is Entity does Lendable { }
 class Container is Entity does Lendable does Location { }

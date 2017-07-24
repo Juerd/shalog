@@ -112,11 +112,31 @@ class Command::is-at is Command::List does Command::Infix {
         die "$new-location would cause infinite containment loop"
             if $new-location.would-loop: any(@stack);
 
-        @stack».is-at: $new-location, :$stays;
-        @stack».store;
-        dd @stack;
+        my (:@accepted, :@rejected) := @stack.classify: sub ($entity) {
+            $new-location ~~ Person or return 'accepted';
+            my @rg = $entity.?requires-groups.?words or return 'accepted';
 
-        put "{ +@stack } { @stack == 1 ?? "item" !! "items" } updated.\n";
+            # subset of or equal to
+            @rg (<=) $new-location.groups.?words and return 'accepted';
+            return 'rejected';
+        };
+
+        for @accepted -> $entity {
+            $entity.is-at: $new-location, :$stays;
+            $entity.store;
+        }
+        put "Accepted { +@accepted } updates.";
+
+        for @rejected -> $entity {
+            put red "REJECTED:";
+            my @g = map { red $_ }, (
+                $entity.requires-groups.?words (-) $new-location.groups.?words
+            ).keys;
+
+            my $g = @g == 1 ?? "group @g[]" !! "groups @g.join("+")";
+            put "$new-location is not in $g but $entity requires it.";
+        }
+
         @stack.reset;
     }
     multi method execute (@, Any $new-location, Bool :$stays) {
@@ -271,14 +291,12 @@ class Command::restore is Command::Immediate {
 class Command::edit-metadata is Command::Unary {
     method execute (Entity $entity) {
         use Prompt; 
-        $entity.comment = prompt(
-            yellow("comment> "),
-            :default($entity.comment // '')
-        );
-        $entity.owner = prompt(
-            yellow("owner> "),
-            :default($entity.owner // '')
-        ) if $entity.can('owner');
+        my %tab = groups => [<teamlead driver manitou>];
+
+        for <comment owner requires-groups groups> -> $attr {
+            my $m = $entity.^lookup: $attr or next;
+            $entity.$m = prompt yellow($attr ~ "> "), :default($entity.$m//'');
+        }
         $entity.store;
     }
 }
