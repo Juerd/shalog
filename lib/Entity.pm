@@ -9,7 +9,8 @@ class Entity {
 
     my %cache;
 
-    has $.id is rw;
+    has $.id;
+    has $.comment is rw;
 
     multi method Str (Entity:D: ) { self.id ~ gray('(' ~ self.^name.lc ~ ')'); }
 
@@ -114,6 +115,7 @@ role Lendable {
     has Location $.location;
     has $.location_history;
     has Bool $.stays = False;
+    has $.owner is rw;
 
     method is-at(Location $new, Bool :$stays = False) {
         $!location = $new;
@@ -147,7 +149,7 @@ role Lendable {
             @prev.=tail($max);
             @prev.push: "(...)" if $!location_history.elems > $max;
 
-            put "{ self } was previously at @prev.reverse.join(", ").";
+            put "{ self } was at @prev.reverse.join(", ").";
         }
 
         my $may-stay = $!stays ?? " and may stay there!" !! ".";

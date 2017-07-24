@@ -12,6 +12,7 @@ class Command::stays-there { ... }
 class Command::abort { ... }
 class Command::help { ... }
 class Command::info { ... }
+class Command::edit-metadata { ... }
 class Command::clear { ... }
 class Command::create { ... }
 class Command::generate { ... }
@@ -27,6 +28,7 @@ class Command {
         'abort' | 'cancel'           => Command::abort,
         'help' | '?'                 => Command::help,
         'info'                       => Command::info,
+        'edit-metadata'              => Command::edit-metadata,
         'clear'                      => Command::clear,
         'create' | 'new' | 'adduser' => Command::create,
         'generate'                   => Command::generate,
@@ -85,6 +87,7 @@ class Command::help is Command::Immediate {
             print               Print labels for selected items
         { white 'Single-item operations:' }
             info                Print contents and/or location
+            edit-metadata       Change metadata
         { white 'Stack manipulation:' }
             <entity>            Add entity to selection
             pop                 Remove last item from selection
@@ -264,5 +267,21 @@ class Command::restore is Command::Immediate {
         @stack.restore;
     }
 }
+
+class Command::edit-metadata is Command::Unary {
+    method execute (Entity $entity) {
+        use Prompt; 
+        $entity.comment = prompt(
+            yellow("comment> "),
+            :default($entity.comment // '')
+        );
+        $entity.owner = prompt(
+            yellow("owner> "),
+            :default($entity.owner // '')
+        ) if $entity.can('owner');
+        $entity.store;
+    }
+}
+
 
 # vim: ft=perl6

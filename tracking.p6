@@ -88,6 +88,7 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
         }
         when Entity {
             @stack.push: $input;
+            put green $input.comment with $input.?comment;
         }
     }
     return True;
