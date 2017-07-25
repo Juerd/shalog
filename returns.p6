@@ -31,6 +31,7 @@ react {
             }
 
             if Entity.load($input) -> $entity {
+                $entity.update;
                 if $entity ~~ Lendable {
                     my $l = $entity.location;
                     my $reply;
