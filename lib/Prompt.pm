@@ -15,8 +15,30 @@ multi lcp(*@s) { substr @s[0], 0, [+] [\and] [Zeqv] |@s».ords }
 
 my @TAB;
 
-my Readline $rl .= new;  # Singleton! libreadline has no instances.
-my $rl_point := cglobal('libreadline.so.6', 'rl_point', int);
+my Readline $rl = BEGIN { Readline.new };  # Singleton! libreadline has no instances.
+
+my $readline-so = BEGIN {
+    # We need to load rl_point from the *same* version as Readline.pm6 uses;
+    # however, for whatever reason just providing 'readline' doesn't work. So
+    # we'll insert a text using Readline.pm6 and then brute force some versions
+    # until we find it.
+    my $found;
+    $rl.insert-text("detect");
+    for "libreadline.so." X~ (5..7).reverse -> $lib {
+        #put $lib;
+        try my $x := cglobal($lib, "rl_end", int);
+        $x or next;
+        if $x == 6 {
+            $found = $lib;
+            last;
+        }
+    }
+    # put "Found $found";
+    $found;
+}
+
+
+my $rl_point := cglobal($readline-so, 'rl_point', int);
 
 state $tabstate;
 
