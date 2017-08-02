@@ -89,10 +89,10 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
             proceed unless @stack and all(@stack) ~~ Lendable;
             @stack».update;
             Command::is-at.new.execute: @stack, $input;
-	    given $input {
-	        .print-contents when Location;
-	        .print-location when Lendable;
-	    }
+            given $input {
+                .print-contents when Location;
+            }
+	    put green $input.comment with $input.?comment;
         }
         when Entity {
             @stack.push: $input;
