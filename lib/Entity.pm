@@ -121,6 +121,8 @@ class Entity {
 
 role Location {
     method print-contents {
+        Entity.all-entities».update;
+
         my Entity @items = Entity.all-entities.grep(Lendable)
             .grep({ .location && .location.id.lc eq $.id.lc });
 
