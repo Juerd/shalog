@@ -5,7 +5,7 @@ role Location { ... }
 role Lendable { ... }
 
 class Entity {
-    use JSON::Tiny;
+    use JSON::Fast;
 
     my %cache;
 
