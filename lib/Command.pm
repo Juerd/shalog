@@ -136,6 +136,11 @@ class Command::is-at is Command::List does Command::Infix {
             put "$new-location is not in $g but $entity requires it.";
         }
 
+        if $new-location ~~ Person {
+            print "\n";
+            $new-location.print-contents;
+        }
+
         @stack.reset;
     }
     multi method execute (@, Any $new-location, Bool :$stays) {

@@ -68,6 +68,8 @@ sub create($id) {
 }
 
 sub handle-input (@stack, $input where Command | Entity --> Bool) {
+    put green $input.comment with $input.?comment;
+
     given $input {
         when any(@stack) {
             die "$input is already selected; ignoring duplicate input.";
@@ -89,14 +91,9 @@ sub handle-input (@stack, $input where Command | Entity --> Bool) {
             proceed unless @stack and all(@stack) ~~ Lendable;
             @stack».update;
             Command::is-at.new.execute: @stack, $input;
-            given $input {
-                .print-contents when Location;
-            }
-	    put green $input.comment with $input.?comment;
         }
         when Entity {
             @stack.push: $input;
-            put green $input.comment with $input.?comment;
         }
     }
     return True;
