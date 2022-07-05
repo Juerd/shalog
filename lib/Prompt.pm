@@ -24,7 +24,7 @@ my $readline-so = BEGIN {
     # until we find it.
     my $found;
     $rl.insert-text("detect");
-    for "libreadline.so." X~ (5..7).reverse -> $lib {
+    for "libreadline.so." X~ (5..8).reverse -> $lib {
         #put $lib;
         try my $x := cglobal($lib, "rl_end", int);
         $x or next;
@@ -34,6 +34,8 @@ my $readline-so = BEGIN {
         }
     }
     # put "Found $found";
+    $found or die "libreadline.so that corresponds to the Readline Raku mdoule not found";
+
     $found;
 }
 

@@ -227,7 +227,17 @@ class Command::generate is Command::Immediate {
 
         for $first..$last -> $i {
             my $id = "$prefix#$i";
-            die "$id already exists; aborting." if Entity.load($id);
+
+            if Entity.load($id) -> $existing {
+                print "$existing already exists; just selecting.\n";
+                $existing ~~ $type
+                    or die "$existing is not of type { $type.^name.lc }; you're on your own.\n";
+
+                @stack.push: $existing;
+
+                next;
+            }
+
             my $e = $type.new(:$id);
             $e.add-to-cache;
             $e.store;
